@@ -1,0 +1,33 @@
+{
+  "name": "whisper-agent",
+  "version": "1.0.0",
+  "description": "Everything starts from zero",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "tsc && electron .",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "electron .",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guohaonan-shy/whisper-agent.git"
+  },
+  "author": "Harold.Guo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guohaonan-shy/whisper-agent/issues"
+  },
+  "homepage": "https://github.com/guohaonan-shy/whisper-agent#readme",
+  "dependencies": {
+    "node-record-lpcm16": "^1.0.1",
+    "node-wav": "^0.0.2",
+    "whisper-node": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "electron": "^39.1.0",
+    "typescript": "^5.3.3"
+  }
+}
