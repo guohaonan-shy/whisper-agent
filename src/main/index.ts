@@ -1,9 +1,10 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
+import { ensureDir } from './utils/helpers';
 import * as path from 'path';
 import { AudioRecorder } from './audio/recorder';
 import { WhisperTranscriber } from './audio/transcriber';
 import { SHORTCUTS } from '../shared/constants';
-import { ensureDir } from './utils/helpers';
+
 
 class WhisperAgent {
   private mainWindow: BrowserWindow | null = null;
@@ -13,7 +14,7 @@ class WhisperAgent {
 
   constructor() {
     this.audioRecorder = new AudioRecorder();
-    this.transcriber = new WhisperTranscriber();
+    this.transcriber = new WhisperTranscriber("base");
     
     // Initialize data directories
     this.initializeDirectories();
@@ -84,7 +85,7 @@ class WhisperAgent {
       console.log('[WhisperAgent] Stopping recording...');
       console.log('========================================\n');
       
-      const audioFilePath = this.audioRecorder.stopRecording();
+      const audioFilePath = await this.audioRecorder.stopRecording();
       this.isRecording = false;
 
       if (audioFilePath) {

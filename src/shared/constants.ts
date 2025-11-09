@@ -1,3 +1,4 @@
+const PROJECT_ROOT = process.cwd();
 import * as path from 'path';
 import * as os from 'os';
 
@@ -17,15 +18,15 @@ export const SHORTCUTS = {
 };
 
 // Paths
-export const DATA_DIR = path.join(os.homedir(), '.whisper-agent');
+export const DATA_DIR = path.join(PROJECT_ROOT, 'data');
 export const AUDIO_DIR = path.join(DATA_DIR, 'audio');
-export const MODELS_DIR = path.join(DATA_DIR, 'models');
+export const MODELS_DIR = path.join(PROJECT_ROOT, 'models');
 export const CONFIG_PATH = path.join(DATA_DIR, 'config.json');
 export const DB_PATH = path.join(DATA_DIR, 'conversations.db');
 
 // Whisper configuration
 export const WHISPER_CONFIG = {
-  MODEL_NAME: 'base',  // tiny, base, small, medium, large
+  MODEL_NAME: 'base',  // tiny, base, small, medium, large, large-v3-turbo
   LANGUAGE: 'auto',    // auto-detect or specify language code
 };
 

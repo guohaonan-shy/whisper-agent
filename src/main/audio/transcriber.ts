@@ -64,9 +64,9 @@ export class WhisperTranscriber {
 
       // Configure whisper
       const options = {
-        modelName: this.modelName,  // Use modelName for whisper-node's default model location
+        modelPath: this.modelPath,
         whisperOptions: {
-          language: WHISPER_CONFIG.LANGUAGE === 'auto' ? undefined : WHISPER_CONFIG.LANGUAGE,
+          language: 'auto',        
           gen_file_txt: false,      // Don't generate text file
           gen_file_subtitle: false,  // Don't generate subtitle
           gen_file_vtt: false,       // Don't generate vtt
@@ -76,6 +76,7 @@ export class WhisperTranscriber {
 
       console.log('[WhisperTranscriber] Options:', JSON.stringify(options, null, 2));
       console.log('[WhisperTranscriber] Starting transcription...');
+      console.log('[WhisperTranscriber] Audio file path:', audioFilePath);
       
       // Run transcription
       const output = await whisper(audioFilePath, options);

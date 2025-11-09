@@ -24,10 +24,23 @@ sox --version
 ```
 
 ### 2. 下载Whisper模型
+手动下载：
 
 ```bash
-npx whisper-node download
+# 创建模型目录
+mkdir -p ~/.whisper-agent/models
+
+# 下载模型
+wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin \
+  -O ~/.whisper-agent/models/ggml-base.bin
 ```
+
+**验证下载:**
+```bash
+ls -lh ./models/ggml-base.bin
+```
+
+应该看到约140MB的文件。
 
 ### 3. 构建项目
 

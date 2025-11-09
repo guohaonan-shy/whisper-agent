@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { randomBytes } from 'crypto';
+import { AUDIO_DIR } from '../../shared/constants';
 
 /**
  * Ensure directory exists, create if not
@@ -23,7 +24,7 @@ export function generateId(): string {
  */
 export function getTempAudioPath(): string {
   const timestamp = Date.now();
-  return path.join(process.cwd(), 'data', 'audio', `recording-${timestamp}.wav`);
+  return path.join(AUDIO_DIR, `recording-${timestamp}.wav`);
 }
 
 /**

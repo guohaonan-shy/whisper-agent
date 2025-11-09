@@ -23,7 +23,7 @@
   "dependencies": {
     "node-record-lpcm16": "^1.0.1",
     "node-wav": "^0.0.2",
-    "whisper-node": "^1.1.1"
+    "whisper-node": "github:guohaonan-shy/whisper-node"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
