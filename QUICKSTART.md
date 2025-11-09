@@ -1,12 +1,12 @@
-# 快速开始指南 - 阶段1
+# Quick Start Guide - Phase 1
 
-## 🎉 代码实现已完成！
+## 🎉 Implementation Complete!
 
-阶段1的所有代码已经实现完毕，现在需要完成以下步骤来运行项目。
+All code for Phase 1 has been implemented. Follow these steps to get the project running.
 
-## 📋 步骤清单
+## 📋 Setup Checklist
 
-### 1. 安装系统依赖（sox - 用于音频录制）
+### 1. Install System Dependencies (sox - for audio recording)
 
 **macOS:**
 ```bash
@@ -18,174 +18,267 @@ brew install sox
 sudo apt-get install sox libsox-fmt-all
 ```
 
-**验证安装:**
+**Verify installation:**
 ```bash
 sox --version
 ```
 
-### 2. 下载Whisper模型
-手动下载：
+### 2. Install Node Dependencies
 
 ```bash
-# 创建模型目录
-mkdir -p ~/.whisper-agent/models
+npm install
+```
 
-# 下载模型
+This will install all dependencies including the custom whisper-node fork.
+
+### 3. Build whisper-node
+
+After installing dependencies, you need to compile the whisper-node package:
+
+```bash
+cd node_modules/whisper-node
+
+# Step 1: Compile TypeScript source
+npm run build
+
+# Step 2: Compile whisper.cpp using cmake
+cd lib/whisper.cpp
+mkdir -p build
+cd build
+cmake ..
+make
+
+# Step 3: Create symbolic links for the whisper-cli executable
+cd /Users/guohaonan/projects/whisper-agent/node_modules/whisper-node/lib/whisper.cpp
+ln -sf build/bin/whisper-cli whisper-cli
+
+# Return to project root
+cd /Users/guohaonan/projects/whisper-agent
+```
+
+**Note:** The newer versions of whisper.cpp use `whisper-cli` instead of `main`. The symbolic link ensures compatibility.
+
+### 4. Download Whisper Models
+
+Download the model manually:
+
+```bash
+# Download base model (recommended for balance of speed and accuracy)
 wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin \
-  -O ~/.whisper-agent/models/ggml-base.bin
+  -O ./models/ggml-base.bin
+
+# Or download tiny model (faster but less accurate)
+wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin \
+  -O ./models/ggml-tiny.bin
+
+# Or download large-v3-turbo model (slower but more accurate)
+wget https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin \
+  -O ./models/ggml-large-v3-turbo.bin
 ```
 
-**验证下载:**
+**Verify download:**
 ```bash
-ls -lh ./models/ggml-base.bin
+ls -lh ./models/
 ```
 
-应该看到约140MB的文件。
+You should see the model file (base model is ~140MB).
 
-### 3. 构建项目
+### 5. Build Project
 
 ```bash
 npm run build
 ```
 
-这会将TypeScript代码编译到`dist/`目录。
+This compiles TypeScript code to the `dist/` directory.
 
-### 4. 运行应用
+### 6. Run the Application
 
+```bash
+npm start
+```
+
+Or in development mode:
 ```bash
 npm run dev
 ```
 
-或者分两步：
-```bash
-npm run build
-npm start
-```
+## 🎯 How to Use
 
-## 🎯 如何使用
+1. **Start the application** - An Electron window will open
+2. **Start recording**: Press `Cmd+Shift+Space` (Mac) or `Ctrl+Shift+Space` (Windows/Linux)
+3. **Speak**: Talk into your microphone
+4. **Stop recording**: Press the same shortcut again
+5. **View results**: Check the terminal console for transcribed text
 
-1. **启动应用**后，会打开一个Electron窗口
-2. **开始录音**：按 `Cmd+Shift+Space`（Mac）或 `Ctrl+Shift+Space`（Windows/Linux）
-3. **说话**：对着麦克风说出你想记录的内容
-4. **停止录音**：再次按相同快捷键
-5. **查看结果**：在终端console中查看转录文本
+## 🧪 Testing Example
 
-## 🧪 测试示例
+After starting the application, try:
 
-启动应用后，尝试：
-
-1. 按快捷键开始录音
-2. 说："你好，这是一个测试"
-3. 按快捷键停止录音
-4. 在console中应该看到类似输出：
+1. Press the shortcut to start recording
+2. Say: "Hello, this is a test"
+3. Press the shortcut to stop recording
+4. You should see output in the console like:
 
 ```
 ========================================
 [WhisperAgent] TRANSCRIPTION RESULT:
 ========================================
-Text: 你好，这是一个测试
+Text: Hello, this is a test
 Duration: 2.34s
 ========================================
 ```
 
-## 🔧 故障排查
+## 🔧 Troubleshooting
 
-### 问题：快捷键不响应
+### Issue: Shortcut not responding
 
-**解决方案：**
-- 检查是否有其他应用占用了相同快捷键
-- 查看终端console是否有错误日志
-- 确保应用已经完全启动
+**Solutions:**
+- Check if another application is using the same shortcut
+- Look for error logs in the terminal console
+- Ensure the application has fully started
 
-### 问题：录音失败
+### Issue: Recording fails
 
-**可能原因：**
-1. sox未正确安装 → 运行 `which sox` 检查
-2. 麦克风权限未授予 → macOS会弹出权限请求，需要允许
-3. 录音设备问题 → 检查系统音频设置
+**Possible causes:**
+1. sox not properly installed → Run `which sox` to check
+2. Microphone permission not granted → macOS will prompt for permission, must allow
+3. Recording device issues → Check system audio settings
 
-### 问题：转录失败
+### Issue: Transcription fails
 
-**可能原因：**
-1. Whisper模型未下载 → 检查 `~/.whisper-agent/models/ggml-base.bin` 是否存在
-2. 模型文件损坏 → 重新下载模型
-3. 音频文件为空 → 检查录音是否成功
+**Possible causes:**
+1. Whisper model not downloaded → Check if `./models/ggml-base.bin` exists
+2. Model file corrupted → Re-download the model
+3. Audio file is empty → Check if recording was successful
+4. whisper.cpp not compiled → Follow step 3 to compile whisper.cpp
+5. Symbolic link missing → Create the symbolic link as shown in step 3
 
-**调试步骤：**
+**Debug steps:**
 ```bash
-# 检查模型文件
-ls -lh ~/.whisper-agent/models/
+# Check model files
+ls -lh ./models/
 
-# 检查录音文件（运行后）
-ls -lh data/audio/
+# Check recording files (after running)
+ls -lh ./data/audio/
+
+# Check if whisper-cli exists
+ls -lh ./node_modules/whisper-node/lib/whisper.cpp/whisper-cli
+ls -lh ./node_modules/whisper-node/lib/whisper.cpp/build/bin/whisper-cli
+
+# Test whisper-cli directly
+cd node_modules/whisper-node/lib/whisper.cpp
+./whisper-cli --help
 ```
 
-## 📂 项目结构概览
+### Issue: whisper-node build errors
+
+If you encounter issues during whisper-node compilation:
+
+```bash
+# Clean and rebuild
+cd node_modules/whisper-node
+rm -rf dist lib/whisper.cpp/build
+npm run build
+
+# Re-compile whisper.cpp
+cd lib/whisper.cpp
+mkdir -p build
+cd build
+cmake ..
+make
+
+# Recreate symbolic link
+cd ..
+ln -sf build/bin/whisper-cli whisper-cli
+```
+
+## 📂 Project Structure
 
 ```
 whisper-agent/
 ├── src/
 │   ├── main/
-│   │   ├── index.ts           ← Electron主入口，快捷键注册
+│   │   ├── index.ts           ← Electron main entry, shortcut registration
 │   │   ├── audio/
-│   │   │   ├── recorder.ts    ← 音频录制实现
-│   │   │   └── transcriber.ts ← Whisper转录实现
+│   │   │   ├── recorder.ts    ← Audio recording implementation
+│   │   │   └── transcriber.ts ← Whisper transcription implementation
 │   │   └── utils/
-│   │       └── helpers.ts     ← 工具函数
+│   │       └── helpers.ts     ← Utility functions
 │   └── shared/
-│       ├── constants.ts       ← 配置常量
+│       ├── constants.ts       ← Configuration constants
 │       └── types/
-│           └── index.ts       ← 类型定义
+│           └── index.ts       ← Type definitions
 ├── data/
-│   └── audio/                 ← 录音文件存储
-└── scripts/
-    └── download-model.sh      ← 模型下载脚本
+│   └── audio/                 ← Recorded audio files storage
+├── models/                    ← Whisper model files
+│   ├── ggml-base.bin
+│   └── ggml-large-v3-turbo.bin
+└── node_modules/
+    └── whisper-node/          ← Custom fork with whisper.cpp integration
 ```
 
-## 🎓 代码说明
+## 🎓 Code Explanation
 
 ### AudioRecorder (`src/main/audio/recorder.ts`)
 
-负责音频录制：
-- 使用`node-record-lpcm16`录制16kHz单声道音频
-- 保存为WAV格式（Whisper要求）
-- 支持开始/停止控制
+Handles audio recording:
+- Uses `node-record-lpcm16` to record 16kHz mono audio
+- Saves as WAV format (required by Whisper)
+- Supports start/stop control
 
 ### WhisperTranscriber (`src/main/audio/transcriber.ts`)
 
-负责语音转文本：
-- 使用`whisper-node`调用本地Whisper模型
-- 自动检测语言
-- 返回转录文本和耗时
+Handles speech-to-text:
+- Uses `whisper-node` to call local Whisper model
+- Auto-detects language
+- Returns transcribed text and duration
 
 ### Main Process (`src/main/index.ts`)
 
-Electron主进程：
-- 注册全局快捷键
-- 协调录音和转录流程
-- 在console输出结果
+Electron main process:
+- Registers global shortcuts
+- Coordinates recording and transcription workflow
+- Outputs results to console
 
-## 🚀 下一步
+## 🚀 Next Steps
 
-阶段1完成后，我们将实现：
+After completing Phase 1, we will implement:
 
-**阶段2：** 应用内交互协议
-- Message和Conversation类型系统
-- 对话上下文管理
-- 会话持久化
+**Phase 2:** In-App Interaction Protocol
+- Message and Conversation type system
+- Conversation context management
+- Session persistence
 
-**阶段3：** LLM集成
-- 多Provider支持（OpenAI、Claude、Gemini）
-- 工具调用系统
-- Agent核心逻辑
+**Phase 3:** LLM Integration
+- Multi-provider support (OpenAI, Claude, Gemini)
+- Tool calling system
+- Agent core logic
 
-## 💡 提示
+## 💡 Tips
 
-- 开发时可以打开Chrome DevTools查看详细日志
-- 录音文件保存在`data/audio/`目录，可以手动播放验证
-- 如果转录速度慢，可以尝试使用`tiny`模型（更快但准确度稍低）
+- Open Chrome DevTools during development to see detailed logs
+- Recording files are saved in `data/audio/` directory, you can play them manually to verify
+- If transcription is slow, try using the `tiny` model (faster but less accurate)
+- The `base` model offers a good balance between speed and accuracy
+- For best accuracy, use `large-v3-turbo` model (requires more processing time)
+
+## 🔄 Model Switching
+
+To use a different model, edit `src/shared/constants.ts`:
+
+```typescript
+export const WHISPER_CONFIG = {
+  MODEL_NAME: 'base',  // Change to 'tiny', 'base', 'small', 'medium', or 'large-v3-turbo'
+  LANGUAGE: 'auto',    // Auto-detect or specify language code
+};
+```
+
+Then rebuild:
+```bash
+npm run build
+npm start
+```
 
 ---
 
-有问题欢迎反馈！🎉
-
+Questions or issues? Feel free to reach out! 🎉
