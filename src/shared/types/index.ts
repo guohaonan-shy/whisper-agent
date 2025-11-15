@@ -89,3 +89,44 @@ export interface TranscriptionResult {
   duration?: number;
 }
 
+// Transcriber Provider types
+export type TranscriberProvider = 'local' | 'groq' | 'openai';
+
+export interface TranscriberConfig {
+  provider: TranscriberProvider;
+  language?: string;
+  
+  // Local config
+  localModelName?: string;
+  
+  // API configs
+  apiKey?: string;
+  apiUrl?: string;
+  model?: string;
+}
+
+// Transcriber interface - all providers must implement this
+export interface ITranscriber {
+  /**
+   * Initialize the transcriber (download models, verify API keys, etc.)
+   */
+  initialize(): Promise<void>;
+  
+  /**
+   * Transcribe an audio file to text
+   * @param audioFilePath Path to the audio file
+   * @returns Transcription result with text, language, and duration
+   */
+  transcribe(audioFilePath: string): Promise<TranscriptionResult>;
+  
+  /**
+   * Check if the transcriber is ready to use
+   */
+  isReady(): boolean;
+  
+  /**
+   * Get provider name
+   */
+  getProviderName(): string;
+}
+

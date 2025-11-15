@@ -26,7 +26,21 @@ export const DB_PATH = path.join(DATA_DIR, 'conversations.db');
 
 // Whisper configuration
 export const WHISPER_CONFIG = {
-  MODEL_NAME: 'base',  // tiny, base, small, medium, large, large-v3-turbo
+  // Provider selection
+  PROVIDER: (process.env.WHISPER_PROVIDER || 'local') as 'local' | 'groq' | 'openai',
+  
+  // Common settings
   LANGUAGE: 'auto',    // auto-detect or specify language code
+  
+  // Local Whisper settings
+  MODEL_NAME: 'base',  // tiny, base, small, medium, large, large-v3-turbo
+  
+  // Groq settings
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
+  GROQ_MODEL: 'whisper-large-v3', // Groq's Whisper model
+  
+  // OpenAI settings
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+  OPENAI_MODEL: 'whisper-1',
 };
 

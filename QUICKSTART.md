@@ -83,7 +83,43 @@ ls -lh ./models/
 
 You should see the model file (base model is ~140MB).
 
-### 5. Build Project
+**Note:** Models are only needed if you use the local transcriber. Skip this step if using API providers.
+
+### 5. Configure Transcriber (Optional)
+
+The application supports multiple transcription providers:
+
+**Option A: Local Whisper (Default)**
+- No configuration needed
+- Requires model download (step 4)
+- Slower but works offline
+
+**Option B: Groq API (Recommended for speed)**
+- Very fast transcription (0.5-2 seconds)
+- Free tier available
+
+Create a `.env` file in the project root:
+```bash
+WHISPER_PROVIDER=groq
+GROQ_API_KEY=gsk_your_api_key_here
+```
+
+Get API key from: https://console.groq.com/keys
+
+**Option C: OpenAI API**
+- Fast and accurate
+- Costs $0.006 per minute
+
+```bash
+WHISPER_PROVIDER=openai
+OPENAI_API_KEY=sk_your_api_key_here
+```
+
+Get API key from: https://platform.openai.com/api-keys
+
+📖 See [Transcriber Configuration Guide](docs/TRANSCRIBER_CONFIGURATION.md) for detailed information.
+
+### 6. Build Project
 
 ```bash
 npm run build
@@ -91,7 +127,7 @@ npm run build
 
 This compiles TypeScript code to the `dist/` directory.
 
-### 6. Run the Application
+### 7. Run the Application
 
 ```bash
 npm start

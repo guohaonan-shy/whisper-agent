@@ -1,20 +1,24 @@
+// Load environment variables from .env file
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { app, BrowserWindow, globalShortcut } from 'electron';
 import { ensureDir } from './utils/helpers';
 import * as path from 'path';
 import { AudioRecorder } from './audio/recorder';
-import { WhisperTranscriber } from './audio/transcriber';
+import { ITranscriber, TranscriberFactory } from './audio/transcribers';
 import { SHORTCUTS } from '../shared/constants';
 
 
 class WhisperAgent {
   private mainWindow: BrowserWindow | null = null;
   private audioRecorder: AudioRecorder;
-  private transcriber: WhisperTranscriber;
+  private transcriber: ITranscriber;
   private isRecording: boolean = false;
 
   constructor() {
     this.audioRecorder = new AudioRecorder();
-    this.transcriber = new WhisperTranscriber("base");
+    this.transcriber = TranscriberFactory.create('groq');
     
     // Initialize data directories
     this.initializeDirectories();
